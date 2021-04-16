@@ -20,6 +20,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(() => {
     const serviceCollection = client.db('smart-paint').collection('services');
     const ordersCollection = client.db('smart-paint').collection('service-orders');
+    const adminCollection = client.db('smart-paint').collection('admin');
 
     app.get('/services', (req, res) => {
         serviceCollection.find().toArray((err, items) => {
@@ -43,6 +44,13 @@ client.connect(() => {
     app.post('/addServicesOrder', (req, res) => {
         const order = req.body;
         ordersCollection.insertOne(order).then((result) => {
+            res.send(result.insertedCount > 0);
+        });
+    });
+
+    app.post('/addAAdmin', (req, res) => {
+        const admin = req.body;
+        adminCollection.insertOne(admin).then((result) => {
             res.send(result.insertedCount > 0);
         });
     });
