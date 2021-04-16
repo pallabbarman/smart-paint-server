@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient } = require('mongodb');
+const { ObjectId } = require('mongodb');
 require('dotenv').config();
 
 const app = express();
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(() => {
     const serviceCollection = client.db('smart-paint').collection('services');
+    const ordersCollection = client.db('smart-paint').collection('service-orders');
 
     app.get('/services', (req, res) => {
         serviceCollection.find().toArray((err, items) => {
@@ -28,6 +30,19 @@ client.connect(() => {
     app.post('/addService', (req, res) => {
         const newProduct = req.body;
         serviceCollection.insertOne(newProduct).then((result) => {
+            res.send(result.insertedCount > 0);
+        });
+    });
+
+    app.get('/service/:_id', (req, res) => {
+        serviceCollection.find({ _id: ObjectId(req.params._id) }).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
+
+    app.post('/addServicesOrder', (req, res) => {
+        const order = req.body;
+        ordersCollection.insertOne(order).then((result) => {
             res.send(result.insertedCount > 0);
         });
     });
