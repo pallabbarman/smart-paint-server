@@ -21,6 +21,7 @@ client.connect(() => {
     const serviceCollection = client.db('smart-paint').collection('services');
     const ordersCollection = client.db('smart-paint').collection('service-orders');
     const adminCollection = client.db('smart-paint').collection('admin');
+    const reviewCollection = client.db('smart-paint').collection('reviews');
 
     app.get('/services', (req, res) => {
         serviceCollection.find().toArray((err, items) => {
@@ -77,7 +78,7 @@ client.connect(() => {
     });
 
     app.get('/admins', (req, res) => {
-        adminCollection.find({}).toArray((err, documents) => {
+        adminCollection.find().toArray((err, documents) => {
             res.send(documents);
         });
     });
@@ -86,6 +87,19 @@ client.connect(() => {
         const { email } = req.body;
         adminCollection.find({ email }).toArray((err, documents) => {
             res.send(documents.length > 0);
+        });
+    });
+
+    app.post('/addReview', (req, res) => {
+        const review = req.body;
+        reviewCollection.insertOne(review).then((result) => {
+            res.send(result.insertedCount > 0);
+        });
+    });
+
+    app.get('/reviews', (req, res) => {
+        reviewCollection.find().toArray((err, documents) => {
+            res.send(documents);
         });
     });
 });
