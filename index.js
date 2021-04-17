@@ -41,6 +41,15 @@ client.connect(() => {
         });
     });
 
+    app.delete('/delete/:_id', (req, res) => {
+        serviceCollection
+            .deleteOne({ _id: ObjectId(req.params._id) })
+            .then((result) => {
+                res.send(result.deletedCount > 0);
+            })
+            .catch((err) => console.log(err));
+    });
+
     app.post('/addServicesOrder', (req, res) => {
         const order = req.body;
         ordersCollection.insertOne(order).then((result) => {
