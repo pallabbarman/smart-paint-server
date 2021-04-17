@@ -48,10 +48,35 @@ client.connect(() => {
         });
     });
 
+    app.get('/servicesOrder', (req, res) => {
+        ordersCollection.find().toArray((err, items) => {
+            res.send(items);
+        });
+    });
+
+    app.get('/servicesOrderByEmail', (req, res) => {
+        ordersCollection.find({ email: req.query.email }).toArray((err, items) => {
+            res.send(items);
+        });
+    });
+
     app.post('/addAAdmin', (req, res) => {
         const admin = req.body;
         adminCollection.insertOne(admin).then((result) => {
             res.send(result.insertedCount > 0);
+        });
+    });
+
+    app.get('/admins', (req, res) => {
+        adminCollection.find({}).toArray((err, documents) => {
+            res.send(documents);
+        });
+    });
+
+    app.post('/isAdmin', (req, res) => {
+        const { email } = req.body;
+        adminCollection.find({ email }).toArray((err, documents) => {
+            res.send(documents.length > 0);
         });
     });
 });
