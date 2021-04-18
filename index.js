@@ -71,6 +71,21 @@ client.connect(() => {
         });
     });
 
+    app.patch('/update/:_id', (req, res) => {
+        ordersCollection
+            .updateOne(
+                { _id: ObjectId(req.params._id) },
+                {
+                    $set: {
+                        status: req.body.status,
+                    },
+                },
+            )
+            .then((result) => {
+                res.send(result.modifiedCount > 0);
+            });
+    });
+
     app.post('/addAAdmin', (req, res) => {
         const admin = req.body;
         adminCollection.insertOne(admin).then((result) => {
