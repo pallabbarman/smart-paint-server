@@ -104,6 +104,15 @@ client.connect(() => {
         });
     });
 
+    app.delete('/deleteReview/:_id', (req, res) => {
+        reviewCollection
+            .deleteOne({ _id: ObjectId(req.params._id) })
+            .then((result) => {
+                res.send(result.deletedCount > 0);
+            })
+            .catch((err) => console.log(err));
+    });
+
     app.post('/addContact', (req, res) => {
         const contact = req.body;
         contactUs.insertOne(contact).then((result) => {
